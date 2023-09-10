@@ -36,4 +36,4 @@ virtual task body();
      get_respose(rsp);
     end
 endtask
-endclass
+endclass : fifo_sequence
