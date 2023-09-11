@@ -6,6 +6,7 @@ endinterface : fifo_intf
 
 //driver clocking block
 clocking dcb @(posedge clk)
+  default input #1 output #1;
   output  i_wrdata;
   output i_wren,i_rden;
   input o_rddata;
@@ -14,12 +15,14 @@ endclocking : dcb
 
 //input monitor clocking block
 clocking input_mcb @(posedge clk)
+  default input #1 output #1;
   input  i_wrdata;
   input i_wren,i_rden;
 endclocking : input_mcb
 
 //output monitor clocking block
 clocking output_mcb @(posedge clk)
+  default input #1 output #1;
   input  o_rddata;
   input o_full,o_empty,o_alm_full,o_alm_empty;
 endclocking : output_mcb
