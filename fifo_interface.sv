@@ -6,22 +6,27 @@ endinterface : fifo_intf
 
 //driver clocking block
 clocking dcb @(posedge clk)
-  input  i_wrdata;
-  input i_wren,i_rden;
-  output o_rddata;
-  output o_full,o_empty,o_alm_full,o_alm_empty;
+  output  i_wrdata;
+  output i_wren,i_rden;
+  input o_rddata;
+  input o_full,o_empty,o_alm_full,o_alm_empty;
 endclocking : dcb
 
-//monitor clocking block
-clocking mcb @(posedge clk)
-  output i_wrdata;
-  output i_wren,i_rden;
+//input monitor clocking block
+clocking input_mcb @(posedge clk)
+  input  i_wrdata;
+  input i_wren,i_rden;
+endclocking : input_mcb
+
+//output monitor clocking block
+clocking output_mcb @(posedge clk)
   input  o_rddata;
   input o_full,o_empty,o_alm_full,o_alm_empty;
-endclocking : mcb
+endclocking : output_mcb
 
 //declare modport
 modport d_mp (input clk, rstn, clocking dcb);
-  modport m_mp (input clk, rstn, clocking mcb);
+modport out_m_mp (input clk, rstn, clocking input_mcb);
+modport out_m_mp (input clk, rstn, clocking output_mcb);
 
 
