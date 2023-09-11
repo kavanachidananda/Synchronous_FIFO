@@ -20,6 +20,6 @@ bit o_alm_empty;
   function new(input string name="fifo_transaction");   
        super.new(name);   
      endfunction   
-     endclass : fifo_transaction   
+endclass : fifo_transaction   
   
   
