@@ -10,7 +10,7 @@ virtual task body();
   repeat(100) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
     wait_for_grant(); // these steps can be repalced by start_item and finifh_item
-     assert(req.randomize()with {i_wren==1;});
+    assert(req.randomize()with {i_wren==1 && i_rden==0;});
      send_request(req);
      wait_for_item_done();
      get_respose(rsp);
@@ -20,17 +20,17 @@ virtual task body();
   repeat(100) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
      wait_for_grant();
-     assert(req.randomize()with {i_rden==1;});
+    assert(req.randomize()with {i_wren==0 && i_rden==1;});
      send_request(req);
      wait_for_item_done();
      get_respose(rsp);
     end
   
-  `uvm_info(get_type_name(), $sformatf("******** Generate Random REQs ********"), UVM_LOW)
+ `uvm_info(get_type_name(), $sformatf("******** Idle condition ********), UVM_LOW)
   repeat(100) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
      wait_for_grant();
-     assert(req.randomize());
+    assert(req.randomize()with {i_rden==0 && i_wren==0;}););
      send_request(req);
      wait_for_item_done();
      get_respose(rsp);
