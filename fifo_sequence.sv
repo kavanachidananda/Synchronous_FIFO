@@ -1,4 +1,4 @@
-class fifo_sequence extends uvm_sequence #(fifo_transaction);
+class fifo_test_write extends uvm_sequence #(fifo_transaction);
   `uvm_object_utils(fifo_sequence) //factory registration
    fifo_transaction req;
   function new(string name = "fifo_sequence"); 
@@ -10,7 +10,7 @@ virtual task body();
   repeat(100) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
     wait_for_grant(); // these steps can be repalced by start_item and finifh_item
-    assert(req.randomize()with {i_wren==1 && i_rden==0;});
+    assert(req.randomize()with {req.i_wren==1 && req.i_rden==0;});
      send_request(req);
      wait_for_item_done();
      get_respose(rsp);
