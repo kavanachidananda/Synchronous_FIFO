@@ -17,17 +17,17 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
 
 // Run phase  
     virtual task run_phase(uvm_phase phase);
-   if(vif.dcb.rstn==0)
-    vif.d_mp.dcb.i_wren <= 'b0;
-    vif.d_mp.dcb.i_rden <= 'b0;
-    vif.d_mp.dcb.data_in <= 'b0;
+   if(vif.dcb.rstn==0) //check for reset
+    vif.d_mp.dcb.i_wren <= 0;
+    vif.d_mp.dcb.i_rden <= 0;
+    vif.d_mp.dcb.i_wrdata <= 0;
    endtask
     forever begin
       seq_item_port.get_next_item(req);
      if(req.i_wren == 1)
-        main_write(req.data_in);
+      write(req.i_wrdata);
      else if(req.i_rden == 1)
-        main_read();
+        read();
       seq_item_port.item_done();
     end
   endtask
