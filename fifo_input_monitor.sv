@@ -19,8 +19,8 @@ class fifo_input_monitor extends uvm_monitor;
    virtual task run_phase(uvm_phase phase);
     forever begin
       @(posedge vif.m_mp.clk)
-      if(vif.m_mp.m_cb.wr == 1 && vif.in)begin
-        $display("\nWR is high");
+      if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
+        $display("\nWrite enable is high");
         req.i_wrdata = vif.m_mp.m_cb.i_wrdata;
         req.i_wren = ;
         req.i_rden = ;
