@@ -32,7 +32,7 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
     end
   endtask : run_phase
 
-   virtual task write(input  i_wrdata);
+   virtual task write(input  [DATA_W - 1 : 0] i_wrdata);
     @(posedge vif.d_mp.clk)
     vif.d_mp.dcb.i_wren <= 1;
     vif.d_mp.dcb.i_wrdata <= i_wrdata;
