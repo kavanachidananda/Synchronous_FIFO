@@ -18,7 +18,7 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
 // Run phase  
     virtual task run_phase(uvm_phase phase);
    if(vif.dcb.rstn==0)
-    vif.d_mp.d_cb.wr <= 'b0;
+    vif.d_mcb.d_cb.wr <= 'b0;
     vif.d_mp.d_cb.rd <= 'b0;
     vif.d_mp.d_cb.data_in <= 'b0;
    endtask
