@@ -15,3 +15,5 @@ class fifo_output_monitor extends uvm_monitor;
       if(!uvm_config_db#(virtual fifo_intf)::get(this, "", "vif", vif))
       `uvm_fatal("Monitor: ", "No vif is found!")
   endfunction
+
+ 
