@@ -19,7 +19,7 @@ class fifo_output_monitor extends uvm_monitor;
    virtual task run_phase(uvm_phase phase);
     forever begin
       @(posedge vif.m_mp.clk)
-      if(vif.m_mp.m_cb.wr == 1 && vif.in_)begin
+      if(vif.m_mp.m_cb.wr == 1 && vif.in)begin
         $display("\nWR is high");
         req.i_wrdata = vif.m_mp.m_cb.i_wrdata;
         req.i_wren = ;
