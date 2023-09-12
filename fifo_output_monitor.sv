@@ -6,5 +6,5 @@ class fifo_output_monitor extends uvm_monitor;
   
    function new(string name = "fifo_output_monitor", uvm_component parent);
     super.new(name, parent);
-      ap = new("ap", this);
+     ap = new("analysis_port", this);
   endfunction
