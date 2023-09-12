@@ -16,7 +16,7 @@
   endfunction
   
   virtual function void connect_phase(uvm_phase phase);
-    f_agt.f_mon.item_got_port.connect(f_scb.item_got_export);
+   agt.mon.ap.connect(scb.ap);
   endfunction
   
 endclass
