@@ -30,8 +30,8 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
         read();
      if(req.i_rden == 1 && req.i_wren == 1)
        write_and_read(req.i_wrdata);
-    else
-     idle();
+     if(req.i_rden == 0 && req.i_wren == 0)
+      idle();
       seq_item_port.item_done();
     end
   endtask : run_phase
@@ -48,8 +48,8 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
    virtual task read();
     @(posedge vif.d_mp.clk)
     vif.d_mp.dcb.i_rden <= 1;
-  //  @(posedge vif.d_mp.clk)
-   // vif.d_mp.dcb.i_rden <= 0;
+  // @(posedge vif.d_mp.clk)
+  // vif.d_mp.dcb.i_rden <= 0;
   endtask : read
 
    virtual task write_and_read(input  [DATA_W - 1 : 0] i_wrdata);
@@ -59,12 +59,9 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
     vif.d_mp.dcb.i_rden <= 1;
    endtask : write_and_read
 
-   virtual task idle(input  [DATA_W - 1 : 0] i_wrdata);
+   virtual task idle();
      @(posedge vif.d_mp.clk)
     vif.d_mp.dcb.i_wren <= 0;
-    vif.d_mp.dcb.i_wrdata <= i_wrdata;
     vif.d_mp.dcb.i_rden <= 0;
-   endtask : write_and_read
-
-   
+   endtask : idle   
 endclass : fifo_driver
