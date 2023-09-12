@@ -21,8 +21,32 @@ class fifo_input_monitor extends uvm_monitor;
       @(posedge vif.m_mp.clk)
       if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
         $display("\nWrite enable is high");
-        req.i_wrdata = vif.m_mp.m_cb.i_wrdata;
-        req.i_wren = ;
-        req.i_rden = ;
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
         ap.write(req);
-      end      
+      end   
+      if(vif.in_m_mp.input_mcb.i_wren == 0 && vif.in_m_mp.input_mcb.i_rden == 1)begin
+        $display("\nWrite enable is high");
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        ap.write(req);
+      end 
+      if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 1)begin
+        $display("\nWrite enable is high");
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        ap.write(req);
+      end 
+      if(vif.in_m_mp.input_mcb.i_wren == 0 && vif.in_m_mp.input_mcb.i_rden == 0)begin
+        $display("\nWrite enable is high");
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        ap.write(req);
+      end    
+    end
+     endtask : run_phase
+     endclass : fifo_driver
