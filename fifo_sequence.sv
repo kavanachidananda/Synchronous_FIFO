@@ -1,4 +1,4 @@
-//continuous write
+//continuous write 
 class fifo_test_write extends uvm_sequence #(fifo_transaction);
   `uvm_object_utils(fifo_test_write) //factory registration
    fifo_transaction req;
