@@ -1,7 +1,7 @@
 class fifo_active_agent extends uvm_agent;
   fifo_sequencer seqr;
-  fifo_driver dri;
-  fifo_input_monitor mon;
+  fifo_driver driv;
+  fifo_input_monitor in_mon;
   `uvm_component_utils(fifo_active_agent)
   
   function new(string name = "fifo_active_agent", uvm_component parent);
@@ -12,14 +12,14 @@ class fifo_active_agent extends uvm_agent;
     super.build_phase(phase);
     if(get_is_active() == UVM_ACTIVE) begin
       seqr = fifo_sequencer::type_id::create("seqr", this);
-      dri = fifo_driver::type_id::create("dri", this);
+      driv = fifo_driver::type_id::create("driv", this);
     end
-    mon = fifo_input_monitor::type_id::create("mon", this);
+      in_mon = fifo_input_monitor::type_id::create("in_mon", this);
   endfunction
   
   virtual function void connect_phase(uvm_phase phase);
     if(get_is_active() == UVM_ACTIVE)
-      dri.seq_item_port.connect(seqr.seq_item_export);
+      driv.seq_item_port.connect(seqr.seq_item_export);
   endfunction
     
 endclass : fifo_agent
