@@ -18,12 +18,12 @@ class fifo_output_monitor extends uvm_monitor;
 
   virtual task run_phase(uvm_phase phase);
     forever begin
-      @(posedge vif.out_m_mp.clk)
-      if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
+      @(posedge vif.out_m_mp.output_mcb.clk)
+      if(vif.out_m_mp.output_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
         $display("\nWrite enable is high");
         req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
         req.i_wren = vif.in_m_mp.input_mcb.i_wren;
-        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        req. = vif.in_m_mp.input_mcb.i_rden;
         ap.write(req);
       end   
  
