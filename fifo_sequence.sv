@@ -30,7 +30,7 @@ class fifo_test_read extends uvm_sequence #(fifo_transaction);
     repeat(DEPTH) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
     start_item(req);
-    assert(req.randomize()with {i_wren==0; i_rden==1;});
+      assert(req.randomize()with {req.i_wren==0; req.i_rden==1;});
     finish_item(req);
     end
   endtask
@@ -48,7 +48,7 @@ class fifo_test_idle extends uvm_sequence #(fifo_transaction);
   repeat(10) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
     start_item(req);
-    assert(req.randomize()with {i_rden==0 ; i_wren==0;}););
+    assert(req.randomize()with {req.i_rden==0 ; req.i_wren==0;}););
     finish_item(req);
     end
 endtask
@@ -66,10 +66,10 @@ class fifo_test_alternate extends uvm_sequence #(fifo_transaction);
   for(int i=0;i<100;i++) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
     start_item(req);
-    assert(req.randomize()with {i_rden==0 ; i_wren==1;});); //write
+    assert(req.randomize()with {req.i_rden==0 ; req.i_wren==1;});); //write
     finish_item(req);
      start_item(req);
-    assert(req.randomize()with {i_rden==1 ; i_wren==0;});); //read
+    assert(req.randomize()with {req.i_rden==1 ; req.i_wren==0;});); //read
     finish_item(req);
     end
 endtask
@@ -87,7 +87,7 @@ class fifo_test_simultaneous extends uvm_sequence #(fifo_transaction);
   for(int i=0;i<100;i++) begin
      req = fifo_transaction::type_id::create("req");  //creating sequence_item
     start_item(req);
-    assert(req.randomize()with {i_rden==1 ; i_wren==1;});); 
+    assert(req.randomize()with {req.i_rden==1 ; req.i_wren==1;});); 
     finish_item(req);
     end
 endtask
