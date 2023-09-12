@@ -36,8 +36,15 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
     @(posedge vif.d_mp.clk)
     vif.d_mp.dcb.i_wren <= 1;
     vif.d_mp.dcb.i_wrdata <= i_wrdata;
-    @(posedge vif.d_mp.clk)
+  //  @(posedge vif.d_mp.clk)
    // vif.d_mp.dcb.i_wren <= 0;
   endtask : write
+
+      virtual task read();
+    @(posedge vif.d_mp.clk)
+    vif.d_mp.dcb.i_rden <= 1;
+  //  @(posedge vif.d_mp.clk)
+   // vif.d_mp.dcb.i_rden <= 0;
+  endtask : read
    
 endclass : fifo_driver
