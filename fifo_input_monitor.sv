@@ -1,4 +1,4 @@
-class fifo_input_monitor extends uvm_monitor;
+class fifo_input_monitor extends uvm_monitor; 
   virtual fifo_intf vif;
   fifo_transaction req;
    uvm_analysis_port#(fifo_transaction) ap;
