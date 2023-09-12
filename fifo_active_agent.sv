@@ -1,10 +1,10 @@
-class fifo_agent extends uvm_agent;
+class fifo_active_agent extends uvm_agent;
   fifo_sequencer seqr;
   fifo_driver dri;
   fifo_input_monitor mon;
-  `uvm_component_utils(fifo_agent)
+  `uvm_component_utils(fifo_active_agent)
   
-  function new(string name = "fifo_agent", uvm_component parent);
+  function new(string name = "fifo_active_agent", uvm_component parent);
     super.new(name, parent);
   endfunction
 
