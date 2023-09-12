@@ -11,10 +11,10 @@ class fifo_active_agent extends uvm_agent;
     virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if(get_is_active() == UVM_ACTIVE) begin
-      seqr = f_sequencer::type_id::create("seqr", this);
-      dri = f_driver::type_id::create("dri", this);
+      seqr = fifo_sequencer::type_id::create("seqr", this);
+      dri = fifo_driver::type_id::create("dri", this);
     end
-    mon = f_monitor::type_id::create("mon", this);
+    mon = fifo_input_monitor::type_id::create("mon", this);
   endfunction
   
   virtual function void connect_phase(uvm_phase phase);
