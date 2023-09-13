@@ -49,4 +49,4 @@ class fifo_input_monitor extends uvm_monitor;
       end    
     end
      endtask : run_phase
-     endclass : fifo_driver
+     endclass : fifo_input_monitor
