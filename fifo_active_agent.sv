@@ -1,3 +1,9 @@
+`include "fifo_transaction"
+`include "fifo_driver"
+`include "fifo_sequencer"
+`include "fifo_input_monitor"
+`include "fifo_sequence"
+
 class fifo_active_agent extends uvm_agent;
   fifo_sequencer seqr;
   fifo_driver driv;
