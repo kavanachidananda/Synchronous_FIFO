@@ -8,5 +8,10 @@ class fifo_passive_agent extends uvm_agent;
     super.new(name, parent);
   endfunction
 
+   virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+      in_mon = fifo_input_monitor::type_id::create("in_mon", this);
+  endfunction
+
   
 endclass : fifo_passive_agent
