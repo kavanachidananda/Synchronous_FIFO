@@ -28,10 +28,15 @@ class fifo_scoreboard extends uvm_scoreboard;
         check_full == 1;
         if(req.o_full==check_full)
           $display("FIFO FULL TEST CASE PASS);
+       else
+         $display("FIFO FULL TEST CASE FAIL);
       end
-      if(count>=1020 && count!=1024) begin
-         req.o_alm_full=1;
-         $display("FIFO is ALMOST FULL);
+        if(count>=req.UPP_TH && count!=DEPTH) begin
+         check_almost_full=1;
+          if(req.o_alm_full==check_almost_full)
+            $display("FIFO FULL TEST CASE PASS");
+          else
+            $display("FIFO FULL TEST CASE FAIL");
       end
     else if (req.i_rden == 1 && req.i_wren == 0)begin
       if(queue.size() >= 1)begin
@@ -39,20 +44,24 @@ class fifo_scoreboard extends uvm_scoreboard;
         count = count - 1;
         `uvm_info("Read Data", $sformatf("data: %0d o_rddata: %0d count: %0d o_empty: %0b",data, req.o_rddata, count, req.empty), UVM_LOW);
         if(count==0)begin
-        req.o_empty == 1;
-          $display("FIFO is EMPTY);
+        check_empty == 1;
+          if(req.o_empty==check_empty)
+            $display("FIFO EMPTY TEST CASE PASS);
+       else
+         $display("FIFO EMPTY TEST CASE FAIL);
       end
-       if(count<=2 && count!=0) begin
-         req.o_alm_empty=1;
-         $display("FIFO is ALMOST EMPTY);
+       if(count<=req.LOW_TH && count!=0) begin
+         check_almost_empty=1;
+         if(req.o_alm_empty==check_almost_empty)
+            $display("FIFO EMPTY TEST CASE PASS");
+          else
+            $display("FIFO EMPTY TEST CASE FAIL");
       end
         if(data == req.o_rddata)begin
-          $display("-------- 		Pass! 		--------");
+          $display("INPUT DATA MATCH");
         end
-        else begin
-          $display("--------		Fail!		--------");
-          $display("--------		Check empty	--------");
-        end
+        else 
+          $display("INPUT DATA MISMATCH");
       end
     end
   endfunction
