@@ -10,11 +10,7 @@ class fifo_passive_agent extends uvm_agent;
 
    virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-      in_mon = fifo_input_monitor::type_id::create("in_mon", this);
+     o_mon = fifo_output_monitor::type_id::create("o_mon", this);
   endfunction
-
-  virtual function void connect_phase(uvm_phase phase);
-      f_dri.seq_item_port.connect(f_seqr.seq_item_export);
-  endfunction  
   
 endclass : fifo_passive_agent
