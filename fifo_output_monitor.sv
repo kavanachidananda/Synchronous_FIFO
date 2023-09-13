@@ -18,12 +18,36 @@ class fifo_output_monitor extends uvm_monitor;
 
   virtual task run_phase(uvm_phase phase);
     forever begin
-      @(posedge vif.out_m_mp.output_mcb.clk)
-      if(vif.out_m_mp.output_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
+      @(posedge vif.m_mp.clk)
+      if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
         $display("\nWrite enable is high");
         req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
         req.i_wren = vif.in_m_mp.input_mcb.i_wren;
-        req. = vif.in_m_mp.input_mcb.i_rden;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
         ap.write(req);
       end   
+      if(vif.in_m_mp.input_mcb.i_wren == 0 && vif.in_m_mp.input_mcb.i_rden == 1)begin
+        $display("\nRead enable is high");
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        ap.write(req);
+      end 
+      if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 1)begin
+        $display("\nWrite and Read enable is high");
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        ap.write(req);
+      end 
+      if(vif.in_m_mp.input_mcb.i_wren == 0 && vif.in_m_mp.input_mcb.i_rden == 0)begin
+        $display("\n No write and read operation");
+        req.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
+        req.i_wren = vif.in_m_mp.input_mcb.i_wren;
+        req.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        ap.write(req);
+      end    
+    end
+     endtask : run_phase
+     endclass : fifo_output_monitor
  
