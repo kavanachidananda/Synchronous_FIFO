@@ -1,6 +1,7 @@
 class fifo_scoreboard extends uvm_scoreboard;
   fifo_transaction req;
   uvm_analysis_imp#(fifo_transaction, fifo_scoreboard) ap;
+  //uvm_analysis_imp#(fifo_transaction, fifo_scoreboard) ap;
   `uvm_component_utils(fifo_scoreboard)
 
   function new(string name = "fifo_scoreboard", uvm_component parent);
@@ -18,6 +19,7 @@ class fifo_scoreboard extends uvm_scoreboard;
   bit check_empty;
   bit check_almost_full;
   bit check_almost_empty;
+  int temp_count;
   function void write(input req);
     bit [127:0] data;
     if(req.i_wren == 1 && req.i_rden == 0)begin
@@ -47,23 +49,29 @@ class fifo_scoreboard extends uvm_scoreboard;
         check_empty == 1;
           if(req.o_empty==check_empty)
             $display("FIFO EMPTY TEST CASE PASS);
-       else
+         else
          $display("FIFO EMPTY TEST CASE FAIL);
-      end
-       if(count<=req.LOW_TH && count!=0) begin
+       end
+         if(count<=req.LOW_TH && count!=0) begin
          check_almost_empty=1;
          if(req.o_alm_empty==check_almost_empty)
             $display("FIFO EMPTY TEST CASE PASS");
           else
             $display("FIFO EMPTY TEST CASE FAIL");
-      end
-        if(data == req.o_rddata)begin
+         end
+         if(data == req.o_rddata)
           $display("INPUT DATA MATCH");
-        end
         else 
           $display("INPUT DATA MISMATCH");
       end
+     end
+  else
+    begin
+      check_empty == 1;
+          if(req.o_empty==check_empty)
+            $display("FIFO EMPTY TEST CASE PASS);
+          else
+             $display("FIFO EMPTY TEST CASE FAIL");
     end
   endfunction
-endclass
 endclass : fifo_scoreboard
