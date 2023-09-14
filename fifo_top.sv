@@ -1,16 +1,20 @@
-`include "fifo_sequence"
-`include "fifo_sequencer"
-`incluse "fifo_driver"
+import uvm_pkg::*;
+`include "uvm_macros.svh"
+`include "fifo_interface.sv"
+`include "fifo_test.sv"
+
+/*`include "fifo_sequence.sv"
+`include "fifo_sequencer.sv"
+`incluse "fifo_drive.svr"
 `include "fifo_scoreboard.sv"
 `include "fifo_active_agent.sv"
 `include "fifo_passive_agent.sv"
 `include "fifo_interface.sv"
 `include "fifo_input_monitor.sv"
 `include "fifo_output_monitor.sv"
-`include "uvm_macros.svh"
 `include "fifo_intf.sv"
 `include "fifo_test.sv"
-`include "fifo_transaction.sv"
+`include "fifo_transaction.sv"*/
 
 module tb;
   bit clk;
@@ -28,18 +32,18 @@ module tb;
   fifo_intf intf(clk, rstn);
   
   SYN_FIFO dut(.clk(intf.clk),
-               .rstn(intf.rstn),
-               .i_wrdata(intf.i_wrdata),
-               .i_wren(intf.i_wren),
-               .i_rden(intf.i_rden),
-               .o_full(intf.o_full),
-               .o_empty(intf.o_empty),
-               .o_rddata(intf.o_rddata),
-               .o_alm_full(intf.o_alm_full),
-               .o_alm_empty(intf.o_alm_empty));
+               .rst(intf.rstn),
+               .data_in(intf.i_wrdata),
+               .write_en(intf.i_wren),
+               .read_en(intf.i_rden),
+               .full(intf.o_full),
+               .empty(intf.o_empty),
+               .data_out(intf.o_rddata),
+               .almost_full(intf.o_alm_full),
+               .almost_empty(intf.o_alm_empty));
   
   initial begin
-    uvm_config_db#(virtual fifo_intf)::set(null, "", "vif",intff);
+    uvm_config_db#(virtual fifo_intf)::set(null, "", "vif",intf);
     $dumpfile("dump.vcd"); 
     $dumpvars;
     run_test("fifo_test");
