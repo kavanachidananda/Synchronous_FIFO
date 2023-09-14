@@ -1,4 +1,4 @@
-`include fifo_env.sv
+`include "fifo_env.sv"
 
 class fifo_test extends uvm_test;
 fifo_sequence seq;
