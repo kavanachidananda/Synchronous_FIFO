@@ -37,4 +37,4 @@ modport d_mp (input clk, rstn, clocking dcb);
 modport in_m_mp (input clk, rstn, clocking input_mcb);
 modport out_m_mp (input clk, rstn, clocking output_mcb);
 
-
+  endinterface
