@@ -13,9 +13,9 @@ class fifo_scoreboard extends uvm_scoreboard;
     super.build_phase(phase);
   endfunction
 
-   int queue[$];
-   int count;
-   bit check_full;
+ int queue[$];
+ int count;
+ bit check_full;
   bit check_empty;
   bit check_almost_full;
   bit check_almost_empty;
