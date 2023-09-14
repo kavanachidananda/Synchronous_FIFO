@@ -1,7 +1,16 @@
-import uvm_pkg::*;
+`include "fifo_sequence"
+`include "fifo_sequencer"
+`incluse "fifo_driver"
+`include "fifo_scoreboard.sv"
+`include "fifo_active_agent.sv"
+`include "fifo_passive_agent.sv"
+`include "fifo_interface.sv"
+`include "fifo_input_monitor.sv"
+`include "fifo_output_monitor.sv"
 `include "uvm_macros.svh"
 `include "fifo_intf.sv"
 `include "fifo_test.sv"
+`include "fifo_transaction.sv"
 
 module tb;
   bit clk;
