@@ -23,5 +23,5 @@
    agt2.o_mon.ap2.connect(scb.ap2);
   endfunction
   
-endclass
+
 endclass : fifo_env
