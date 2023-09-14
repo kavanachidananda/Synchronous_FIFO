@@ -17,7 +17,7 @@ fifo_env env;
 
    virtual task run_phase(uvm_phase phase);
     phase.raise_objection(this);
-    seq.start(env.agt.f_seqr);
+     seq.start(env.agt1.seqr);
     phase.drop_objection(this);
     phase.phase_done.set_drain_time(this, 100);
   endtask
