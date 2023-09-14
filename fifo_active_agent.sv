@@ -1,8 +1,8 @@
-`include "fifo_transaction"
-`include "fifo_driver"
-`include "fifo_sequencer"
-`include "fifo_input_monitor"
-`include "fifo_sequence"
+`include "fifo_transaction.sv"
+`include "fifo_driver.sv"
+`include "fifo_sequencer.sv"
+`include "fifo_input_monitor.sv"
+`include "fifo_sequence.sv"
 
 class fifo_active_agent extends uvm_agent;
   fifo_sequencer seqr;
@@ -28,4 +28,4 @@ class fifo_active_agent extends uvm_agent;
       driv.seq_item_port.connect(seqr.seq_item_export);
   endfunction
     
-endclass : fifo_agent
+endclass : fifo_active_agent
