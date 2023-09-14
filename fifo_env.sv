@@ -19,8 +19,8 @@
   endfunction
   
   virtual function void connect_phase(uvm_phase phase); 
-   agt1.mon.ap.connect(scb.ap);
-   agt2.
+   agt1.in_mon.ap1.connect(scb.ap1);
+   agt2.o_mon.ap2.connect(scb.ap2);
   endfunction
   
 endclass
