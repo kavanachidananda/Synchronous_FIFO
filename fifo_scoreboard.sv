@@ -1,10 +1,6 @@
- parameter DATA_W   = 128;    // Data width
-  parameter DEPTH    = 1024;    // Depth of FIFO
-  parameter UPP_TH   = 4;       // Upper threshold to generate Almost-full
-  parameter LOW_TH   = 2 ;       // Lower threshold to generate Almost-empty
+
 
 class fifo_scoreboard extends uvm_scoreboard;
-  fifo_transaction req;
   uvm_analysis_imp#(fifo_transaction, fifo_scoreboard) ap1;
   uvm_analysis_imp#(fifo_transaction, fifo_scoreboard) ap2;
   `uvm_component_utils(fifo_scoreboard)
@@ -26,46 +22,46 @@ class fifo_scoreboard extends uvm_scoreboard;
   bit check_almost_full;
   bit check_almost_empty;
   int temp_count;
-  function void write(input req);
+  function void write(input fifo_transaction req1);
     bit [127:0] data;
-    if(req.i_wren == 1 && req.i_rden == 0)begin
-      queue.push_back(req.i_wrdata);
+    if(req1.i_wren == 1 && req1.i_rden == 0)begin
+      queue.push_back(req1.i_wrdata);
       count = count + 1;
-      `uvm_info("write Data", $sformatf("i_wren: %0b i_rden: %0b i_wrdata: %0d count: %0d o_full: %0b",req.i_wren, req.i_rden,req.i_wrdata, count, req.o_full), UVM_LOW);
+      `uvm_info("write Data", $sformatf("i_wren: %0b i_rden: %0b i_wrdata: %0d count: %0d o_full: %0b",req1.i_wren, req1.i_rden,req1.i_wrdata, count, req1.o_full), UVM_LOW);
       if(count==DEPTH)begin
-        check_full == 1;
-        if(req.o_full==check_full)
-          $display("FIFO FULL TEST CASE PASS);
+        check_full = 1;
+        if(req1.o_full==check_full)
+          $display("FIFO FULL TEST CASE PASS");
        else
-         $display("FIFO FULL TEST CASE FAIL);
+         $display("FIFO FULL TEST CASE FAIL");
       end
-        if(count>=req.UPP_TH && count!=DEPTH) begin
+      if(count>=(DEPTH-UPP_TH) && count!=DEPTH) begin
          check_almost_full=1;
-          if(req.o_alm_full==check_almost_full)
+        if(req1.o_alm_full==check_almost_full)
             $display("FIFO FULL TEST CASE PASS");
           else
             $display("FIFO FULL TEST CASE FAIL");
       end
-    else if (req.i_rden == 1 && req.i_wren == 0)begin
+      else if (req1.i_rden == 1 && req1.i_wren == 0)begin
       if(queue.size() >= 1)begin
         data = queue.pop_front();
         count = count - 1;
-        `uvm_info("Read Data", $sformatf("data: %0d o_rddata: %0d count: %0d o_empty: %0b",data, req.o_rddata, count, req.empty), UVM_LOW);
+        `uvm_info("Read Data", $sformatf("data: %0d o_rddata: %0d count: %0d o_empty: %0b",data, req1.o_rddata, count, req1.o_empty), UVM_LOW);
         if(count==0)begin
-        check_empty == 1;
-          if(req.o_empty==check_empty)
-            $display("FIFO EMPTY TEST CASE PASS);
+        check_empty = 1;
+          if(req1.o_empty==check_empty)
+            $display("FIFO EMPTY TEST CASE PASS");
          else
-         $display("FIFO EMPTY TEST CASE FAIL);
+           $display("FIFO EMPTY TEST CASE FAIL");
        end
-         if(count<=req.LOW_TH && count!=0) begin
+        if(count<=LOW_TH && count!=0) begin
          check_almost_empty=1;
-         if(req.o_alm_empty==check_almost_empty)
+           if(req1.o_alm_empty==check_almost_empty)
             $display("FIFO EMPTY TEST CASE PASS");
           else
             $display("FIFO EMPTY TEST CASE FAIL");
          end
-         if(data == req.o_rddata)
+        if(data == req1.o_rddata)
           $display("INPUT DATA MATCH");
         else 
           $display("INPUT DATA MISMATCH");
@@ -73,11 +69,13 @@ class fifo_scoreboard extends uvm_scoreboard;
      end
   else
     begin
-      check_empty == 1;
-          if(req.o_empty==check_empty)
-            $display("FIFO EMPTY TEST CASE PASS);
+      check_empty = 1;
+      if(req1.o_empty==check_empty)
+            $display("FIFO EMPTY TEST CASE PASS");
           else
              $display("FIFO EMPTY TEST CASE FAIL");
     end
+    end
   endfunction
+      
 endclass : fifo_scoreboard
