@@ -1,3 +1,8 @@
+ parameter DATA_W   = 128;    // Data width
+  parameter DEPTH    = 1024;    // Depth of FIFO
+  parameter UPP_TH   = 4;       // Upper threshold to generate Almost-full
+  parameter LOW_TH   = 2 ;       // Lower threshold to generate Almost-empty
+
 class fifo_scoreboard extends uvm_scoreboard;
   fifo_transaction req;
   uvm_analysis_imp#(fifo_transaction, fifo_scoreboard) ap1;
