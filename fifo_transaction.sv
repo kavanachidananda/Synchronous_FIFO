@@ -1,3 +1,7 @@
+ parameter DATA_W   = 128;    // Data width
+  parameter DEPTH    = 1024;    // Depth of FIFO
+  parameter UPP_TH   = 4;       // Upper threshold to generate Almost-full
+  parameter LOW_TH   = 2 ;       // Lower threshold to generate Almost-empty
 class fifo_transaction extends uvm_sequence_item;
 rand bit i_wren;
 rand bit i_rden;
