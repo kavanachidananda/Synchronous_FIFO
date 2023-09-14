@@ -1,80 +1,59 @@
-module SYN_FIFO #(
-  parameter DATA_W   = 128,     // Data width
-  parameter DEPTH    = 1024,    // Depth of FIFO
-  parameter UPP_TH   = 4,       // Upper threshold to generate Almost-full
-  parameter LOW_TH   = 2        // Lower threshold to generate Almost-empty
-)(
-  input                   clk,         // Clock
-  input                   rstn,        // Active-low Synchronous Reset
-  input                   i_wren,      // Write Enable
-  input  [DATA_W - 1 : 0] i_wrdata,    // Write-data
-  output                  o_alm_full,  // Almost-full signal
-  output                  o_full,      // Full signal
-  input                   i_rden,      // Read Enable
-  output [DATA_W - 1 : 0] o_rddata,    // Read-data
-  output                  o_alm_empty, // Almost-empty signal
-  output                  o_empty      // Empty signal
+module SYN_FIFO(
+  input wire clk,             // Clock signal
+  input wire rst,             // Reset signal
+  input wire write_en,        // Write enable
+  input wire read_en,         // Read enable
+  input wire [127:0] data_in, // Input data
+  output wire [127:0] data_out, // Output data
+  output wire full,           // Full signal
+  output wire almost_full,    // Almost Full signal (4 spaces left)
+  output wire empty,          // Empty signal
+  output wire almost_empty    // Almost Empty signal (2 spaces filled)
 );
 
+ 
 
-  
-  reg [DATA_W - 1:0] fifo [0:DEPTH-1]; // FIFO storage
-  reg [DATA_W - 1:0] o_rddata_reg;     // Output data register
-  reg [10:0]          count;            // FIFO count
-  wire                read_ptr_inc;     // Read pointer increment
-  wire                write_ptr_inc;    // Write pointer increment
+  // FIFO parameters
+  parameter DEPTH = 1024;
+  parameter WIDTH = 128;
 
-  // Almost-full and full conditions
-  assign o_alm_full = (count >= DEPTH - UPP_TH && count!=DEPTH);
-  assign o_full = (count == DEPTH);
+ 
 
-  // Almost-empty and empty conditions
-  assign o_alm_empty = (count <= LOW_TH && count!=0);
-  assign o_empty = (count == 0);
+  // Internal FIFO storage
+  reg [WIDTH-1:0] fifo[0:DEPTH-1];
+  reg [9:0] write_ptr;
+  reg [9:0] read_ptr;
+  wire [9:0] fifo_count = write_ptr - read_ptr;
+  wire almost_full_condition = (fifo_count >= (DEPTH - 4));
+  wire almost_empty_condition = (fifo_count <= 2);
+// Full and Empty signals
+  assign full = (fifo_count >= (DEPTH - 1));
+  assign almost_full = (almost_full_condition && !full);
+  assign empty = (fifo_count == 0);
+  assign almost_empty = (almost_empty_condition && !empty);
 
-  // Write pointer logic
-  always @(posedge clk or negedge rstn) begin
-    if (!rstn)
-      count <= 0;
-    else if (i_wren && !o_full)
-      count <= count + 1;
+ 
+
+  always @(posedge clk or posedge rst) begin
+    if (rst) begin
+      write_ptr <= 0;
+      read_ptr <= 0;
+    end else if (write_en) begin
+      fifo[write_ptr] <= data_in;
+      write_ptr <= write_ptr + 1;
+    end
+
+ 
+
+    if (rst) begin
+      read_ptr <= 0;
+    end else if (read_en) begin
+      read_ptr <= read_ptr + 1;
+    end
   end
 
-  // Read pointer logic
-  always @(posedge clk or negedge rstn) begin
-    if (!rstn)
-      o_rddata_reg <= 0;
-    else if (i_rden && !o_empty)
-      o_rddata_reg <= fifo[count - 1];
-  end
-
-  // FIFO write logic
-  always @(posedge clk or negedge rstn) begin
-    if (!rstn)
-      fifo <= '{DEFAULT:DATA_W{1'b0}};
-    else if (i_wren && !o_full)
-      fifo[write_ptr_inc ? count : count - 1] <= i_wrdata;
-  end
- // FIFO read logic 
-  always @(posedge clk or negedge rstn) begin
-    if (!rstn)
-      read_ptr_inc <= 1'b0;
-    else if (i_rden && !o_empty)
-      read_ptr_inc <= ~read_ptr_inc;
-  end
-
-  // Write and read pointers
-  always @(posedge clk or negedge rstn) begin
-    if (!rstn)
-      write_ptr_inc <= 1'b0;
-    else if (i_wren && !o_full)
-      write_ptr_inc <= ~write_ptr_inc;
-  end
-
-  // Output data assignment
-  always @(posedge clk) begin
-    if (read_ptr_inc)
-      o_rddata <= o_rddata_reg;
-  end
+ 
+// Assign data_out outside of procedural blocks
+  assign data_out = (read_en) ? fifo[read_ptr] : 128'b0;
 
 endmodule
