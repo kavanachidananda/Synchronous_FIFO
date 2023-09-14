@@ -10,7 +10,7 @@
    function new(string name = "fifo_env", uvm_component parent);
     super.new(name, parent);
   endfunction
-  
+   
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     agt1 = fifo_active_agent::type_id::create("agt1", this);
