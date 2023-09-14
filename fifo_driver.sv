@@ -1,3 +1,8 @@
+ parameter DATA_W   = 128;    // Data width
+  parameter DEPTH    = 1024;    // Depth of FIFO
+  parameter UPP_TH   = 4;       // Upper threshold to generate Almost-full
+  parameter LOW_TH   = 2 ;       // Lower threshold to generate Almost-empty
+
 class fifo_driver extends uvm_driver #(fifo_transaction);
  virtual fifo_intf vif; //interface handle
   fifo_transaction req; //sequence_item handle
