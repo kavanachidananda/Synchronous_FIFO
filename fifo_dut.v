@@ -55,7 +55,7 @@ module SYN_FIFO #(
     else if (i_wren && !o_full)
       fifo[write_ptr_inc ? count : count - 1] <= i_wrdata;
   end
- // FIFO read logic
+ // FIFO read logic 
   always @(posedge clk or negedge rstn) begin
     if (!rstn)
       read_ptr_inc <= 1'b0;
