@@ -1,25 +1,41 @@
-`include "fifo_env.sv"
+import uvm_pkg::*;
+`include "uvm_macros.svh"
+`include "fifo_interface.sv"
+`include "fifo_test.sv"
 
-class fifo_test extends uvm_test;
-fifo_sequence seq;
-fifo_env env;
-  `uvm_component_utils(fifo_test)
 
-  function new(string name = "fifo_test", uvm_component parent);
-    super.new(name, parent);
-  endfunction
 
-  virtual function void build_phase(uvm_phase phase);
-    super.build_phase(phase);
-    seq = fifo_sequence::type_id::create("seq", this);
-    env = fifo_env::type_id::create("env", this);
-  endfunction
-
-   virtual task run_phase(uvm_phase phase);
-    phase.raise_objection(this);
-     seq.start(env.agt1.seqr);
-    phase.drop_objection(this);
-    phase.phase_done.set_drain_time(this, 100);
-  endtask
+module tb;
+  bit clk;
+  bit rstn;
   
-endclass : fifo_test
+  always #5 clk = ~clk;
+  
+  initial begin
+    clk = 1;
+    rstn = 1;
+    #5;
+    rstn = 0;
+  end
+  
+  fifo_intf intf(clk, rstn);
+  
+  SYN_FIFO dut(.clk(intf.clk),
+               .rstn(intf.rstn),
+               .i_wrdata(intf.i_wrdata),
+               .i_wren(intf.i_wren),
+               .i_rden(intf.i_rden),
+               .o_full(intf.o_full),
+               .o_empty(intf.o_empty),
+               .o_rddata(intf.o_rddata),
+               .o_alm_full(intf.o_alm_full),
+               .o_alm_empty(intf.o_alm_empty));
+  
+  initial begin
+    uvm_config_db#(virtual fifo_intf)::set(null, "", "vif",intff);
+    $dumpfile("dump.vcd"); 
+    $dumpvars;
+    run_test("fifo_test");
+  end
+  
+endmodule
