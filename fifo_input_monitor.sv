@@ -20,31 +20,56 @@ class fifo_input_monitor extends uvm_monitor;
     forever begin
       @(posedge vif.in_m_mp.clk)
       if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 0)begin
-        $display("\nWrite enable is high");
+        $display("\nInput Monitor:Write enable is high and Read enable is low");
         req1.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
         req1.i_wren = vif.in_m_mp.input_mcb.i_wren;
         req1.i_rden = vif.in_m_mp.input_mcb.i_rden;
+        req1.o_rddata = vif.in_m_mp.input_mcb.o_rddata; 
+        req1.o_full = vif.in_m_mp.input_mcb.o_full;
+        req1.o_alm_full = vif.in_m_mp.input_mcb.o_alm_full;
+        req1.o_empty = vif.in_m_mp.input_mcb.o_empty;
+        req1.o_alm_empty = vif.in_m_mp.input_mcb.o_alm_empty;
+        
         ap1.write(req1);
       end   
       if(vif.in_m_mp.input_mcb.i_wren == 0 && vif.in_m_mp.input_mcb.i_rden == 1)begin
-        $display("\nRead enable is high");
+     
+        $display("\n Input Monitor: Write enable is low and Read enable is high");
         req1.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
         req1.i_wren = vif.in_m_mp.input_mcb.i_wren;
         req1.i_rden = vif.in_m_mp.input_mcb.i_rden;
+         req1.o_rddata = vif.in_m_mp.input_mcb.o_rddata; 
+        req1.o_full = vif.in_m_mp.input_mcb.o_full;
+        req1.o_alm_full = vif.in_m_mp.input_mcb.o_alm_full;
+        req1.o_empty = vif.in_m_mp.input_mcb.o_empty;
+        req1.o_alm_empty = vif.in_m_mp.input_mcb.o_alm_empty;
         ap1.write(req1);
+         `uvm_info("Write enable is low and Read enable is high", $sformatf("i_wren: %0b i_rden: %0b i_wrdata: %0d o_rddata: %0d o_full: %0b o_empty: %0b o_alm_full: %0b o_alm_empty: %0b",req1.i_wren, req1.i_rden,req1.i_wrdata,req1.o_rddata, req1.o_full,req1.o_empty,req1.o_alm_full,req1.o_alm_empty), UVM_LOW);
       end 
       if(vif.in_m_mp.input_mcb.i_wren == 1 && vif.in_m_mp.input_mcb.i_rden == 1)begin
-        $display("\nWrite and Read enable is high");
+       
+        $display("\n Input Monitor :Write and Read enable is high");
         req1.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
         req1.i_wren = vif.in_m_mp.input_mcb.i_wren;
         req1.i_rden = vif.in_m_mp.input_mcb.i_rden;
+         req1.o_rddata = vif.in_m_mp.input_mcb.o_rddata; 
+        req1.o_full = vif.in_m_mp.input_mcb.o_full;
+        req1.o_alm_full = vif.in_m_mp.input_mcb.o_alm_full;
+        req1.o_empty = vif.in_m_mp.input_mcb.o_empty;
+        req1.o_alm_empty = vif.in_m_mp.input_mcb.o_alm_empty;
         ap1.write(req1);
       end 
       if(vif.in_m_mp.input_mcb.i_wren == 0 && vif.in_m_mp.input_mcb.i_rden == 0)begin
-        $display("\n No write and read operation");
+      
+        $display("\n Input Monitor: No write and read operation");
         req1.i_wrdata = vif.in_m_mp.input_mcb.i_wrdata;
         req1.i_wren = vif.in_m_mp.input_mcb.i_wren;
         req1.i_rden = vif.in_m_mp.input_mcb.i_rden;
+         req1.o_rddata = vif.in_m_mp.input_mcb.o_rddata; 
+        req1.o_full = vif.in_m_mp.input_mcb.o_full;
+        req1.o_alm_full = vif.in_m_mp.input_mcb.o_alm_full;
+        req1.o_empty = vif.in_m_mp.input_mcb.o_empty;
+        req1.o_alm_empty = vif.in_m_mp.input_mcb.o_alm_empty;
         ap1.write(req1);
       end    
     end
