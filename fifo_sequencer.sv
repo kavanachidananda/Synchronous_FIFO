@@ -3,6 +3,6 @@ class fifo_sequencer extends uvm_sequencer#(fifo_transaction);
   
   function new(string name = "fifo_sequencer", uvm_component parent);
     super.new(name, parent);
-  endfunction
+  endfunction 
   
 endclass : fifo_sequencer
