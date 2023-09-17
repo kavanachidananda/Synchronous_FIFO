@@ -13,9 +13,9 @@ module tb;
   
   initial begin
     clk = 1;
-    rstn = 1;
-    #5;
     rstn = 0;
+    #5;
+    rstn = 1;
   end
   
   fifo_intf intf(clk, rstn);
@@ -28,8 +28,7 @@ module tb;
                .full(intf.o_full),
                .empty(intf.o_empty),
                .data_out(intf.o_rddata),
-               .almost_full(intf.o_alm_full),
-               .almost_empty(intf.o_alm_empty));
+               .almost_full(intf.o_alm_full), .almost_empty(intf.o_alm_empty));
   
   initial begin
     uvm_config_db#(virtual fifo_intf)::set(null, "", "vif",intf);
