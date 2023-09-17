@@ -26,44 +26,39 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
     
     forever begin
       seq_item_port.get_next_item(req);
-     if(req.i_wren == 1 && req.i_rden == 0)
-      write(req.i_wrdata);
-     if(req.i_wren == 0 && req.i_rden == 1)
-        read();
-     if(req.i_rden == 1 && req.i_wren == 1)
-       write_and_read(req.i_wrdata);
-     if(req.i_rden == 0 && req.i_wren == 0)
-      idle();
+          
+   if(req.i_wren == 1 && req.i_rden == 0) begin
+         @(posedge vif.d_mp.clk)
+   		vif.d_mp.dcb.i_wren <= req.i_wren;
+            vif.d_mp.dcb.i_rden <= req.i_rden;
+   			vif.d_mp.dcb.i_wrdata <= req.i_wrdata;
+     	 @(negedge vif.d_mp.clk)
+             vif.d_mp.dcb.i_wren <= 0;
+             vif.d_mp.dcb.i_rden <=0; 
+   end
+      
+    if(req.i_wren == 0 && req.i_rden == 1) begin
+    @(posedge vif.d_mp.clk)
+ 		vif.d_mp.dcb.i_wren <= req.i_wren;
+       vif.d_mp.dcb.i_rden <= req.i_rden;
+    @(negedge vif.d_mp.clk)
+       vif.d_mp.dcb.i_wren <= 0;
+        vif.d_mp.dcb.i_rden <=0; 
+    end
+      
+         if(req.i_rden == 1 && req.i_wren == 1) begin
+    @(posedge vif.d_mp.clk)
+ 		vif.d_mp.dcb.i_wren <= req.i_wren;
+         vif.d_mp.dcb.i_rden <= req.i_rden;
+     		vif.d_mp.dcb.i_wrdata <= req.i_wrdata; end
+      
+      if(req.i_rden == 0 && req.i_wren == 0) begin
+        @(posedge vif.d_mp.clk)
+    		vif.d_mp.dcb.i_wren <= req.i_wren;
+            vif.d_mp.dcb.i_rden <= req.i_rden; end
       seq_item_port.item_done();
     end
     endtask
 
    
-   virtual task write(input  [DATA_W - 1 : 0] i_wrdata);
-    @(posedge vif.d_mp.clk)
-    vif.d_mp.dcb.i_wren <= 1;
-    vif.d_mp.dcb.i_wrdata <= req.i_wrdata;
-  // @(posedge vif.d_mp.clk)
-   // vif.d_mp.dcb.i_wren <= 0;
-  endtask : write
-
-   virtual task read();
-    @(posedge vif.d_mp.clk)
-    vif.d_mp.dcb.i_rden <= 1;
-  // @(posedge vif.d_mp.clk)
-  // vif.d_mp.dcb.i_rden <= 0;
-  endtask : read
-
-   virtual task write_and_read(input  [DATA_W - 1 : 0] i_wrdata);
-     @(posedge vif.d_mp.clk)
-    vif.d_mp.dcb.i_wren <= 1;
-    vif.d_mp.dcb.i_wrdata <= req.i_wrdata;
-    vif.d_mp.dcb.i_rden <= 1;
-   endtask : write_and_read
-
-   virtual task idle();
-     @(posedge vif.d_mp.clk)
-    vif.d_mp.dcb.i_wren <= 0;
-    vif.d_mp.dcb.i_rden <= 0;
-   endtask : idle   
 endclass : fifo_driver
