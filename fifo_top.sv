@@ -20,7 +20,7 @@ module tb;
   
   fifo_intf intf(clk, rstn);
   
-  SYN_FIFO dut(.clk(intf.clk),
+  my_fifo dut(.clk(intf.clk),
                .rst(intf.rstn),
                .data_in(intf.i_wrdata),
                .write_en(intf.i_wren),
