@@ -1,5 +1,3 @@
-
-
 class fifo_scoreboard extends uvm_scoreboard;
   uvm_analysis_imp#(fifo_transaction, fifo_scoreboard) ap1;
 
@@ -42,7 +40,7 @@ bit [DATA_W - 1 : 0] queue[$];
          			else
           				 $display("FIFO EMPTY TEST CASE FAIL");
       
-        			if(count<=LOW_TH && count!=0)
+        			if(count<LOW_TH && count!=0)
         				 check_almost_empty=1;
                        
           			if(req1.o_alm_empty==1 && check_almost_empty==1)
@@ -53,7 +51,7 @@ bit [DATA_W - 1 : 0] queue[$];
                 
                 
                 
-                if(count>=(DEPTH-UPP_TH) && count<DEPTH)
+                if(count>(UPP_TH) && count<DEPTH)
        					  check_almost_full=1;
                 
                 if((req1.o_alm_full==1) && (check_almost_full==1))
@@ -90,7 +88,7 @@ bit [DATA_W - 1 : 0] queue[$];
          			else
           				 $display("FIFO EMPTY TEST CASE FAIL");
       
-        			if(count<=LOW_TH && count!=0)
+        			if(count<LOW_TH && count!=0)
         				 check_almost_empty=1;
                        
           			if(req1.o_alm_empty==1 && check_almost_empty==1)
@@ -101,7 +99,7 @@ bit [DATA_W - 1 : 0] queue[$];
                   
                   
                   
-                	  if(count>=(DEPTH-UPP_TH) && count<DEPTH)
+                	  if(count>(UPP_TH) && count<DEPTH)
        					  check_almost_full=1;
                 
               		  if((req1.o_alm_full==1) && (check_almost_full==1))
