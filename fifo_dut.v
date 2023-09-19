@@ -1,79 +1,119 @@
-module SYN_FIFO(
-  input wire clk,             // Clock signal
-  input wire rst,             // Reset signal
-  input wire write_en,        // Write enable
-  input wire read_en,         // Read enable
-  input wire [127:0] data_in, // Input data
-  output wire [127:0] data_out, // Output data
-  output wire full,           // Full signal
-  output wire almost_full,    // Almost Full signal (4 spaces left)
-  output wire empty,          // Empty signal
-  output wire almost_empty    // Almost Empty signal (2 spaces filled)
-);
+module my_fifo #(
+                   parameter DATA_W           = 128      ,        // Data width
+                   parameter DEPTH            = 5      ,        // Depth of FIFO                   
+                   parameter UPP_TH           = 4      ,        // Upper threshold to generate Almost-full
+                   parameter LOW_TH           = 2               // Lower threshold to generate Almost-empty
+                )
 
- 
+                (
+                   input                   clk         ,        // Clock
+                   input                   rstn        ,        // Active-low Synchronous Reset
+                   
+                   input                   i_wren      ,        // Write Enable
+                   input  [DATA_W - 1 : 0] i_wrdata    ,        // Write-data
+                   output                  o_alm_full  ,        // Almost-full signal
+                   output                  o_full      ,        // Full signal
 
-  // FIFO parameters
-  parameter DEPTH = 5;
-  parameter WIDTH = 128;
+                   input                   i_rden      ,        // Read Enable
+                   output [DATA_W - 1 : 0] o_rddata    ,        // Read-data
+                   output                  o_alm_empty ,        // Almost-empty signal
+                   output                  o_empty              // Empty signal
+                );
 
- 
 
-  // Internal FIFO storage
-  reg [WIDTH-1:0] fifo[0:DEPTH-1];
-  reg [9:0] write_ptr;
-  reg [9:0] read_ptr;
-  reg [127:0] out;
-  wire [9:0] fifo_count = write_ptr - read_ptr;
-  wire almost_full_condition = (fifo_count >= (DEPTH - 4));
-  wire almost_empty_condition = (fifo_count <= 2);
-// Full and Empty signals
-  assign full = (fifo_count >= (DEPTH));
-  assign almost_full = (almost_full_condition && !full);
-  assign empty = (fifo_count == 0);
-  assign almost_empty = (almost_empty_condition && !empty);
-
- 
-
-  always @(posedge clk or negedge rst) begin
-    if (!rst) begin
-      write_ptr <= 0;
-      read_ptr <= 0;
+/*-------------------------------------------------------------------------------------------------------------------------------
+   Internal Registers/Signals
+-------------------------------------------------------------------------------------------------------------------------------*/
+logic [DATA_W - 1        : 0] data_rg [DEPTH] ;        // Data array
+logic [$clog2(DEPTH) - 1 : 0] wrptr_rg        ;        // Write pointer
+logic [$clog2(DEPTH) - 1 : 0] rdptr_rg        ;        // Read pointer
+logic [$clog2(DEPTH)     : 0] dcount_rg       ;        // Data counter
       
-    end
-    
-    
-    else  if (write_en==1 && read_en==0) begin
-      fifo[write_ptr] <= data_in;
-      write_ptr <= write_ptr + 1;
-    end
-    
- 
+logic                         wren_s          ;        // Write Enable signal generated iff FIFO is not full
+logic                         rden_s          ;        // Read Enable signal generated iff FIFO is not empty
+logic                         full_s          ;        // Full signal
+logic                         empty_s         ;        // Empty signal
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------
+   Synchronous logic to write to and read from FIFO
+-------------------------------------------------------------------------------------------------------------------------------*/
+always @ (posedge clk) begin
+
+   if (!rstn) begin      
       
+      data_rg   <= '{default: '0} ;
+      wrptr_rg  <= 0              ;
+      rdptr_rg  <= 0              ;      
+      dcount_rg <= 0              ;
 
-    else if (read_en ==1 && write_en==0) begin
+   end
 
-        out <= fifo[read_ptr];
-        read_ptr <= read_ptr + 1; 
-    end
-    
-    else if (write_en && read_en) begin
-      write_ptr=0;
-      read_ptr=0;
-      fifo[write_ptr] = data_in;
-      out = fifo[read_ptr];
-    end
-    
-    else if (!write_en && !read_en) begin
-      write_ptr=0;
-      read_ptr=0;
-      fifo[write_ptr] = 0;
-      out = fifo[read_ptr];
-    end 
-  end
+   else begin   
+            
+      /* FIFO write logic */            
+      if (wren_s) begin                          
+                  
+         data_rg [wrptr_rg] <= i_wrdata ;        // Data written to FIFO
 
- 
-// Assign data_out outside of procedural blocks
-  assign data_out = out;
+         if (wrptr_rg == DEPTH - 1) begin
+            wrptr_rg <= 0               ;        // Reset write pointer  
+         end
+
+         else begin
+            wrptr_rg <= wrptr_rg + 1    ;        // Increment write pointer            
+         end
+
+      end
+
+      /* FIFO read logic */
+      if (rden_s) begin         
+
+         if (rdptr_rg == DEPTH - 1) begin
+            rdptr_rg <= 0               ;        // Reset read pointer
+         end
+
+         else begin
+            rdptr_rg <= rdptr_rg + 1    ;        // Increment read pointer            
+         end
+
+      end
+
+      /* FIFO data counter update logic */
+      if (wren_s && !rden_s) begin               // Write operation
+         dcount_rg <= dcount_rg + 1 ;
+      end                    
+      else if (!wren_s && rden_s) begin          // Read operation
+         dcount_rg <= dcount_rg - 1 ;         
+      end
+
+   end
+
+end
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------
+   Continuous Assignments
+-------------------------------------------------------------------------------------------------------------------------------*/
+
+// Full and Empty internal
+assign full_s      = (dcount_rg == DEPTH) ? 1'b1 : 0                ; 
+assign empty_s     = (dcount_rg == 0    ) ? 1'b1 : 0                ;
+
+// Write and Read Enables internal
+assign wren_s      = i_wren & !full_s                               ;  
+assign rden_s      = i_rden & !empty_s                              ;
+
+// Full and Empty to output
+assign o_full      = full_s  || !ready_rg                           ;
+assign o_empty     = empty_s                                        ;
+
+// Almost-full and Almost-empty to output
+assign o_alm_full  = ((dcount_rg > UPP_TH) ? 1'b1 : 0)              ;
+assign o_alm_empty = (dcount_rg < LOW_TH) ? 1'b1 : 0                ;  
+
+// Read-data to output
+assign o_rddata    = data_rg [rdptr_rg]                             ;   
+
 
 endmodule
