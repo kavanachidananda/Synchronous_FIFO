@@ -14,24 +14,25 @@ module tb;
   initial begin
     clk = 1;
     rstn = 0;
-    #5;
+   #5;
     rstn = 1;
   end
   
   fifo_intf intf(clk, rstn);
   
-  my_fifo dut(.clk(intf.clk),
-               .rst(intf.rstn),
-               .data_in(intf.i_wrdata),
-               .write_en(intf.i_wren),
-               .read_en(intf.i_rden),
-               .full(intf.o_full),
-               .empty(intf.o_empty),
-               .data_out(intf.o_rddata),
-               .almost_full(intf.o_alm_full), .almost_empty(intf.o_alm_empty));
+  SYN_FIFO dut(.clk(intf.clk),
+               .rstn(intf.rstn),
+               .i_wrdata(intf.i_wrdata),
+               .i_wren(intf.i_wren),
+               .i_rden(intf.i_rden),
+               .o_full(intf.o_full),
+               .o_empty(intf.o_empty),
+               .o_rddata(intf.o_rddata),
+               .o_alm_full(intf.o_alm_full),
+               .o_alm_empty(intf.o_alm_empty));
   
   initial begin
-    uvm_config_db#(virtual fifo_intf)::set(null, "", "vif",intf);
+    uvm_config_db#(virtual fifo_intf)::set(null, "", "vif",intff);
     $dumpfile("dump.vcd"); 
     $dumpvars;
     run_test("fifo_test");
