@@ -20,7 +20,7 @@ module fifo_top;
   
   fifo_intf intf(clk, rstn);
   
-  SYN_FIFO dut(.clk(intf.clk),
+  my_fifo dut(.clk(intf.clk),
                .rstn(intf.rstn),
                .i_wrdata(intf.i_wrdata),
                .i_wren(intf.i_wren),
