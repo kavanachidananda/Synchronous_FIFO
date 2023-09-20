@@ -1,6 +1,6 @@
-VLOG =  /tools/mentor/questa_10.6b/questasim/bin/vlog
+VLOG =  /tools/mentor/questasim/questasim/bin/vlog
 
-VSIM = /tools/mentor/questa_10.6b/questasim/bin/vsim
+VSIM = /tools/mentor/questasim/questasim/bin/vsim
 
 all: comp_rtl comp run
 
