@@ -5,7 +5,7 @@ import uvm_pkg::*;
 
 
 
-module tb;
+module fifo_top;
   bit clk;
   bit rstn;
   
